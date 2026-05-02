@@ -1,4 +1,5 @@
 require('dotenv').config();
+process.env.MONGOMS_VERSION = '7.0.3';
 
 // Polyfill for Node 18 to support global crypto (used by Mongoose/MongoDB)
 const crypto = require('crypto');
