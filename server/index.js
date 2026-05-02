@@ -29,7 +29,7 @@ app.get('/', (req, res) => {
 
 // Database Connection
 const PORT = process.env.PORT || 5000;
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/team-task-manager';
+const MONGO_URI = process.env.MONGO_URI || process.env.MONGO_URL || process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/team-task-manager';
 
 mongoose.connect(MONGO_URI)
   .then(() => {
@@ -37,11 +37,16 @@ mongoose.connect(MONGO_URI)
     app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
   })
   .catch(async (err) => {
-    console.warn('⚠️ Local MongoDB connection failed. Falling back to In-Memory Database...');
-    const { MongoMemoryServer } = require('mongodb-memory-server');
-    const mongoServer = await MongoMemoryServer.create();
-    const uri = mongoServer.getUri();
-    await mongoose.connect(uri);
-    console.log('✅ Connected to In-Memory MongoDB for testing');
+    console.warn('⚠️ Local MongoDB connection failed. Attempting In-Memory Database fallback...');
+    try {
+      const { MongoMemoryServer } = require('mongodb-memory-server');
+      const mongoServer = await MongoMemoryServer.create();
+      const uri = mongoServer.getUri();
+      await mongoose.connect(uri);
+      console.log('✅ Connected to In-Memory MongoDB for testing');
+    } catch (inMemErr) {
+      console.error('❌ In-Memory Database fallback failed to start:', inMemErr.message);
+      console.log('⚠️ Continuing server execution without DB for demo and routing purposes.');
+    }
     app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
   });
