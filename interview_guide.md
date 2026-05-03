@@ -38,7 +38,12 @@ We used **Vite** instead of Create React App (CRA).
 ## 3. Phase 3: Frontend Architecture & Design
 
 ### UI/UX & Styling
-To ensure maximum performance and absolute control over the design, we opted for **Vanilla CSS with CSS Variables** (`index.css`) rather than a heavy component library. We extracted the core "Glassmorphism" aesthetics and custom Cyan/Teal color palette directly from the Ethara.AI mockups. 
+To ensure maximum performance and absolute control over the design, we opted for **Vanilla CSS with CSS Variables** (`index.css`) rather than a heavy component library. We iterated the UI specifically to match the provided **Ethara.AI mockups**. 
+This involved:
+- Crafting a premium dark-themed hero section with abstract gradient backgrounds.
+- Designing high-fidelity statistics cards (`Proven Track Record`) and outlined expertise cards.
+- Implementing a responsive pill-shaped navigation bar.
+- Using a custom Cyan/Teal (`#14b8a6`) brand color palette.
 
 ### React Router Setup (`App.jsx`)
 We implemented client-side routing using `react-router-dom`:
@@ -58,8 +63,9 @@ For the Kanban Board, we integrated `@hello-pangea/dnd` (a robust, maintained fo
 ### `server/index.js` Explained
 We created the entry point for our backend API.
 1. **Express & Middleware**: We instantiate `express()` and apply `cors()` to allow our React app to fetch data. We use `express.json()` to automatically parse incoming JSON payloads.
-2. **MongoDB Connection**: We use `mongoose.connect()` to connect to our NoSQL database. We default to a local connection string (`mongodb://127.0.0.1:27017`) but allow it to be overridden by environment variables (useful for Railway/Atlas deployment).
-3. **Why this architecture?**: By separating the server initialization and the routing (which we will add next), we maintain a clean, modular codebase that is easy to scale and test.
+2. **MongoDB Connection**: We use `mongoose.connect()` to connect to our NoSQL database. We originally used an in-memory fallback, but **transitioned to a robust Cloud MongoDB Atlas connection** to ensure persistent data storage across deployments.
+3. **Graceful Warning Handling**: Since modern Node.js versions throw deprecation warnings for deep-level MongoDB driver dependencies (like `punycode`), we configured our `package.json` scripts with `--no-warnings=DeprecationWarning` to keep the production and development console logs clean and professional.
+4. **Why this architecture?**: By separating the server initialization and the routing (which we will add next), we maintain a clean, modular codebase that is easy to scale and test.
 
 ---
 

@@ -33,11 +33,17 @@ const MONGO_URI = process.env.MONGO_URI || process.env.MONGO_URL || process.env.
 
 mongoose.connect(MONGO_URI)
   .then(() => {
-    console.log('✅ Connected to MongoDB');
+    console.log('✅ Connected to MongoDB successfully.');
     app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
   })
   .catch(async (err) => {
-    console.warn('⚠️ Local MongoDB connection failed. Attempting In-Memory Database fallback...');
+    if (MONGO_URI.includes('<username>')) {
+      console.error('❌ Cloud MongoDB connection failed: Please update your server/.env file with your actual MongoDB Atlas credentials.');
+    } else {
+      console.error('❌ MongoDB connection failed:', err.message);
+    }
+    
+    console.warn('⚠️ Attempting In-Memory Database fallback so the server can start...');
     try {
       const { MongoMemoryServer } = require('mongodb-memory-server');
       const mongoServer = await MongoMemoryServer.create();

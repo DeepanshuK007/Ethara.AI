@@ -23,9 +23,12 @@ Ensure all your code is committed and pushed to a public or private GitHub repos
 2. Click on **+ New Project** -> **Deploy from GitHub repo**.
 3. Select your repository.
 4. Go to **Variables** tab for the service and add:
+   - `MONGO_URI`: Your MongoDB Atlas connection string (e.g., `mongodb+srv://<username>:<password>@cluster0.../ethara-tasks`)
    - `JWT_SECRET`: Any random secure string (e.g., `4832u9428hjdf8shdf832h9842f`)
    - `PORT`: `5000` (Optional, Railway automatically sets this, but it's good to specify)
    - `NODE_ENV`: `production`
+
+> **Note on MongoDB**: We have transitioned to using a real Cloud MongoDB instance to ensure persistent data storage. Without this variable, the server will error out or fall back to an ephemeral memory server.
 
 ### 🔧 Important Railway Configuration for the Monorepo
 Since your code is a monorepo containing `client` and `server`:
