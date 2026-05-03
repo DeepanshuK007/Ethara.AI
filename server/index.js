@@ -43,6 +43,13 @@ mongoose.connect(MONGO_URI)
       console.error('❌ MongoDB connection failed:', err.message);
     }
     
+    if (process.env.NODE_ENV === 'production') {
+      console.error('❌ In production mode, a valid MONGO_URI is required in your environment variables to ensure persistence.');
+      console.log('⚠️ Continuing server execution without DB for demo and routing purposes.');
+      app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT} (without DB)`));
+      return;
+    }
+    
     console.warn('⚠️ Attempting In-Memory Database fallback so the server can start...');
     try {
       const { MongoMemoryServer } = require('mongodb-memory-server');
