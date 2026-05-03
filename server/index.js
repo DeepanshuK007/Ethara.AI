@@ -29,7 +29,7 @@ app.get('/', (req, res) => {
 
 // Start the server immediately so that deployment health checks pass
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, '0.0.0.0', () => console.log(`🚀 Server running on port ${PORT}`));
 
 // Database Connection in the background
 const MONGO_URI = process.env.MONGO_URI || process.env.MONGO_URL || process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/team-task-manager';
