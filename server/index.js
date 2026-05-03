@@ -27,14 +27,16 @@ app.get('/', (req, res) => {
   res.send('Team Task Manager API is running...');
 });
 
-// Database Connection
+// Start the server immediately so that deployment health checks pass
 const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+
+// Database Connection in the background
 const MONGO_URI = process.env.MONGO_URI || process.env.MONGO_URL || process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/team-task-manager';
 
 mongoose.connect(MONGO_URI)
   .then(() => {
     console.log('✅ Connected to MongoDB successfully.');
-    app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
   })
   .catch(async (err) => {
     if (MONGO_URI.includes('<username>')) {
@@ -45,12 +47,11 @@ mongoose.connect(MONGO_URI)
     
     if (process.env.NODE_ENV === 'production') {
       console.error('❌ In production mode, a valid MONGO_URI is required in your environment variables to ensure persistence.');
-      console.log('⚠️ Continuing server execution without DB for demo and routing purposes.');
-      app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT} (without DB)`));
+      console.log('⚠️ Server execution is continuing without a working database.');
       return;
     }
     
-    console.warn('⚠️ Attempting In-Memory Database fallback so the server can start...');
+    console.warn('⚠️ Attempting In-Memory Database fallback so the server can start with fallback DB...');
     try {
       const { MongoMemoryServer } = require('mongodb-memory-server');
       const mongoServer = await MongoMemoryServer.create();
@@ -59,7 +60,5 @@ mongoose.connect(MONGO_URI)
       console.log('✅ Connected to In-Memory MongoDB for testing');
     } catch (inMemErr) {
       console.error('❌ In-Memory Database fallback failed to start:', inMemErr.message);
-      console.log('⚠️ Continuing server execution without DB for demo and routing purposes.');
     }
-    app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
   });
